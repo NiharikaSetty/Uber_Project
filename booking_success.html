@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmation - Smart Uber System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f7fa;
+            padding: 50px;
+            text-align: center;
+        }
+
+        .success-card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #4CAF50;
+        }
+
+        p {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        .back-link {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="success-card">
+        <h2>Booking Successful!</h2>
+        <p>Your ride has been successfully booked. You will receive details shortly.</p>
+        <a href="{{ url_for('rider') }}" class="back-link">Back to Ride Booking</a>
+    </div>
+
+</body>
+</html>
