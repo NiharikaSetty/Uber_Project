@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ride Details - Smart Uber System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fa;
+        }
+
+        header {
+            background-color: #24292e;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        nav a {
+            color: #ffffff;
+            margin-right: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .map-container {
+            margin-top: 30px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .driver-details {
+            background-color: #f0f8ff;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Smart Uber System</h1>
+        
+    </header>
+
+    <div class="container">
+        <h2>Ride Details</h2>
+        <p><strong>Pickup Address:</strong> {{ pickup_address }}</p>
+        <p><strong>Drop Address:</strong> {{ drop_address }}</p>
+        <p><strong>Distance:</strong> {{ distance_km }} km</p>
+        <p><strong>Estimated Fare:</strong> ₹{{ fare }}</p>
+        <p><strong>Weather Condition:</strong> {{ weather }}</p>
+        
+
+        <a href="{{ url_for('rider') }}" class="back-link">← Back to Booking</a>
+        <a href="{{ url_for('driver_details') }}" class="back-link" style="margin-left: 10px; font-weight: bold; background-color: #007bff; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">View Driver Details</a>
+
+        {% if show_map %}
+        <div class="map-container">
+            <h3>Ride Route Map</h3>
+            <iframe src="{{ url_for('static', filename='ride_route.html') }}" width="100%" height="500"></iframe>
+        </div>
+        {% endif %}
+
+        <div id="driver-info" class="driver-details" style="display: none;"></div>
+    </div>
+    
+    <script>
+        function fetchDriverDetails() {
+            fetch("/random_driver")
+                .then(response => response.json())
+                .then(data => {
+                    const driverInfoDiv = document.getElementById("driver-info");
+                    driverInfoDiv.innerHTML = `
+                        <h3>Driver Details</h3>
+                        <p><strong>Driver ID:</strong> ${data.driver_id}</p>
+                        <p><strong>Driver Name:</strong> ${data.name}</p>
+                        <p><strong>Rating:</strong> ${data.rating} ★</p>
+                        <p><strong>Phone:</strong> ${data.phone}</p>
+                    `;
+                    driverInfoDiv.style.display = 'block';
+                })
+                .catch(error => {
+                    alert("Failed to fetch driver info");
+                    console.error(error);
+                });
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Find Optimal Path</title>
+</head>
+<body>
+  <h2>Find Optimal Path</h2>
+
+  <form id="pathForm">
+    <label for="start">Start Node:</label>
+    <input type="text" id="start" name="start" value="A" required><br><br>
+
+    <label for="end">End Node:</label>
+    <input type="text" id="end" name="end" value="C" required><br><br>
+
+    <label for="traffic">Traffic Conditions (0-10):</label>
+    <input type="number" id="traffic" name="traffic" value="3" min="0" max="10" required><br><br>
+
+    <button type="submit">Find Path</button>
+  </form>
+
+  <h3>Response:</h3>
+  <pre id="response"></pre>
+
+  <script>
+    document.getElementById('pathForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const start = document.getElementById('start').value;
+      const end = document.getElementById('end').value;
+      const traffic = parseInt(document.getElementById('traffic').value);
+
+      const responseEl = document.getElementById('response');
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/find_optimal_path', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            start: start,
+            end: end,
+            traffic_conditions: traffic
+          })
+        });
+
+        const data = await response.json();
+        responseEl.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        responseEl.textContent = 'Error: ' + error.message;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <centre>
+    <title>Ride Details</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .info {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 700px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        p {
+            font-size: 16px;
+            margin: 10px 0;
+            color: #555;
+        }
+
+        p strong {
+            color: #222;
+        }
+
+        .btn-group {
+            margin: 25px 0;
+        }
+
+        .btn-group a {
+            text-decoration: none;
+            padding: 12px 24px;
+            margin: 8px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-group a:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        #map {
+            height: 400px;
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        @media (max-height: 800px) {
+            body {
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="info">
+        <h2>Ride Details</h2>
+        <p><strong>Pickup Address:</strong> G.Pulla Reddy Engineering College, Kurnool, Andhra Pradesh</p>
+        <p><strong>Drop Address:</strong> Adoni, Andhra Pradesh</p>
+        <p><strong>Distance:</strong> 103.65 km</p>
+        <p><strong>Estimated Fare:</strong> ₹177.97</p>
+        <p><strong>Weather Condition:</strong> Stormy</p>
+
+        <div class="btn-group">
+            <a href="/booking">← Back to Booking</a>
+            <a href="/driver">View Driver Details</a>
+        </div>
+
+        <div id="map"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([15.8222, 77.4926], 9); // Center on Kurnool roughly
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        const pickup = L.latLng(15.8222, 77.4926); // Kurnool
+        const drop = L.latLng(15.6310, 77.2755);   // Adoni
+
+        L.marker(pickup).addTo(map).bindPopup("Pickup").openPopup();
+        L.marker(drop).addTo(map).bindPopup("Drop");
+
+        L.polyline([pickup, drop], { color: 'blue', weight: 5 }).addTo(map);
+    </script>
+    </centre>
+</body>
+</html>

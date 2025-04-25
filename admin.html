@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Smart Uber System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        h2 {
+            margin-top: 40px;
+            color: #34495e;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        #ridesChart {
+            width: 100%;
+            height: 400px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 80%; /* Reduced the table width */
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            margin-left: auto; /* Center align the table */
+            margin-right: auto; /* Center align the table */
+        }
+
+        th, td {
+            padding: 8px 10px; /* Reduced padding to shrink table size */
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 14px; /* Reduced font size for better compactness */
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Admin Dashboard</h1>
+
+    <div class="section chart-container">
+        <h2>Rides Per Day</h2>
+        <canvas id="ridesChart"></canvas>
+    </div>
+
+    <div class="section">
+        <h2>Average Fare: ₹{{ avg_fare }}</h2>
+    </div>
+
+    <div class="section">
+        <h2>Uber Rides - Top 5 Records</h2>
+        <table>
+            <thead>
+                <tr>
+                    {% for header in uber_headers %}
+                        <th>{{ header }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in uber_data %}
+                    <tr>
+                        {% for item in row %}
+                            <td>{{ item }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Driver Details - Top 5 Records</h2>
+        <table>
+            <thead>
+                <tr>
+                    {% for header in driver_headers %}
+                        <th>{{ header }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in driver_data %}
+                    <tr>
+                        {% for item in row %}
+                            <td>{{ item }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const chartLabels = JSON.parse('{{ chart_labels | tojson | safe }}');
+        const chartValues = JSON.parse('{{ chart_values | tojson | safe }}');
+
+        const ctx = document.getElementById('ridesChart').getContext('2d');
+        const ridesChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Rides per Day',
+                    data: chartValues,
+                    backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                    borderColor: 'rgba(41, 128, 185, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Rides'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <!-- Place this after the "Average Fare" section -->
+<!-- Place this after the "Average Fare" section -->
+<div class="section" style="font-size: 0.85rem; max-width: 400px; margin: 20px auto; text-align: center;">
+    <h2 style="font-size: 1.2rem;">Performance Metrics</h2>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px; margin-left: auto; margin-right: auto;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th style="padding: 6px; text-align: center;">Metric</th>
+                <th style="padding: 6px; text-align: center;">Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 6px;">Accuracy</td>
+                <td style="padding: 6px;">{{ accuracy }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 6px;">Precision</td>
+                <td style="padding: 6px;">{{ precision }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 6px;">Recall</td>
+                <td style="padding: 6px;">{{ recall }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 6px;">F1 Score</td>
+                <td style="padding: 6px;">{{ f1 }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Driver Details</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f7fa;
+            padding: 40px;
+            text-align: center;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .success-message {
+            background-color: #28a745;
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .container {
+    background-color: #28a745;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 18px;
+    width: fit-content;
+    padding: 10px 30px;
+    height: auto;
+    margin: 100px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+    </style>
+</head>
+<body>
+   
+
+    <div class="card">
+        <h2>Driver Assigned</h2>
+        <p><strong>ID:</strong> {{ driver.driver_id }}</p>
+        <p><strong>Name:</strong> {{ driver.driver_name }}</p>
+        <p><strong>Phone:</strong> {{ driver.driver_phone }}</p>
+        <p><strong>Rating:</strong> {{ driver.driver_rating }} ★</p>
+        <a href="{{ url_for('rider') }}">← Back to Booking</a>
+    </div>
+    <div class="container">
+        Ride successfully booked!
+    </div>
+    
+</body>
+</html>

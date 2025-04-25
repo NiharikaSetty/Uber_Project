@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rider Booking</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            background-color: #17a2b8;
+            color: white;
+            width: 100%;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: #fff;
+            margin-top: 40px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 22px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        form label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            align-self: center;
+            width: 100%;
+            text-align: left;
+            max-width: 600px;
+        }
+
+        form input[type="text"],
+        form select {
+            width: 100%;
+            max-width: 600px;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+
+        form input[type="text"]:focus,
+        form select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        form input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        form input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .map-buttons {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            max-width: 600px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .map-buttons button {
+            background-color: #17a2b8;
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .map-buttons button:hover {
+            background-color: #138496;
+        }
+
+        #map {
+            height: 300px;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .map-container {
+            margin-top: 40px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 20px;
+            }
+
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+
+            .map-buttons button,
+            form input[type="submit"] {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Smart Uber System</h1>
+    </header>
+
+    <div class="container">
+        <h2>Rider Booking</h2>
+
+        <form method="POST">
+            <label for="pickup_address">Pickup Address:</label>
+            <input type="text" name="pickup_address" id="pickup_address" required>
+
+            <label for="drop_address">Drop Address:</label>
+            <input type="text" name="drop_address" id="drop_address" required>
+
+            <label for="weather">Weather:</label>
+            <select name="weather" required>
+                <option value="Clear">Clear</option>
+                <option value="Rainy">Rainy</option>
+                <option value="Stormy">Stormy</option>
+                <option value="Sunny">Sunny</option>
+            </select>
+
+            <input type="submit" value="Book Ride">
+        </form>
+
+        <div class="map-buttons">
+            <button onclick="getLocation()" type="button">Use My Location</button>
+            <button onclick="setMode('pickup')" type="button">Set Pickup from Map</button>
+            <button onclick="setMode('drop')" type="button">Set Drop from Map</button>
+        </div>
+
+        <div id="map"></div>
+
+        {% if show_map %}
+        <div class="map-container">
+            <h3>Ride Route Map</h3>
+            <iframe src="{{ url_for('static', filename='ride_route.html') }}" width="100%" height="500"></iframe>
+        </div>
+        {% endif %}
+
+        <a href="{{ url_for('rider') }}" class="back-link">← Back to Booking</a>
+    </div>
+
+    <script>
+        let map = L.map('map').setView([15.83, 78.05], 6); // Andhra Pradesh
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        let currentMode = null;
+        let pickupMarker = null;
+        let dropMarker = null;
+
+        function setMode(mode) {
+            currentMode = mode;
+            alert("Click on the map to select the " + mode + " location.");
+        }
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`, {
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById("pickup_address").value = data.display_name;
+                        map.setView([lat, lon], 15);
+                        if (pickupMarker) map.removeLayer(pickupMarker);
+                        pickupMarker = L.marker([lat, lon]).addTo(map).bindPopup("Your Location").openPopup();
+                    });
+                });
+            } else {
+                alert("Geolocation not supported by this browser.");
+            }
+        }
+
+        map.on('click', function (e) {
+            if (!currentMode) {
+                alert("Please choose to set pickup or drop from map first.");
+                return;
+            }
+
+            const lat = e.latlng.lat;
+            const lon = e.latlng.lng;
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`, {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                const address = data.display_name;
+                if (currentMode === 'pickup') {
+                    document.getElementById("pickup_address").value = address;
+                    if (pickupMarker) map.removeLayer(pickupMarker);
+                    pickupMarker = L.marker([lat, lon]).addTo(map).bindPopup("Pickup Location").openPopup();
+                } else if (currentMode === 'drop') {
+                    document.getElementById("drop_address").value = address;
+                    if (dropMarker) map.removeLayer(dropMarker);
+                    dropMarker = L.marker([lat, lon]).addTo(map).bindPopup("Drop Location").openPopup();
+                }
+                currentMode = null;
+            })
+            .catch(err => {
+                console.error("Geocoding failed:", err);
+                alert("Could not fetch address. Try again.");
+            });
+        });
+    </script>
+</body>
+</html>
